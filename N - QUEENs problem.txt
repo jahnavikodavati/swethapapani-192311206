@@ -1,0 +1,36 @@
+
+Question 1: Visualizing Solutions for the N-Queens Problem
+
+Discuss the importance of visualizing the solutions of the N-Queens Problem to understand the placement of queens better. Use a graphical representation to show how queens are placed on the board for different values of N. Explain how visual tools can help in debugging the algorithm and gaining insights into the problem's complexity. Provide examples of visual representations for N = 4, N = 5, and N = 8, showing different valid solutions.
+
+
+def solve_and_print_n_queens(N):
+    board = [-1] * N
+    solutions = []
+    def solve(row):
+        if row == N:
+            solutions.append(board[:])
+            return
+        for col in range(N):
+            valid = True
+            for prev_row in range(row):
+                if board[prev_row] == col or \
+                   board[prev_row] - prev_row == col - row or \
+                   board[prev_row] + prev_row == col + row:
+                    valid = False
+                    break
+            if valid:
+                board[row] = col
+                solve(row + 1)
+                board[row] = -1
+    solve(0)
+    print(f"Solutions for N = {N}:")
+    for solution in solutions:
+        for row in range(N):
+            line = ['.'] * N
+            line[solution[row]] = 'Q'
+            print(' '.join(line))
+        print()
+N_values = [4]
+for N in N_values:
+    solve_and_print_n_queens(N)

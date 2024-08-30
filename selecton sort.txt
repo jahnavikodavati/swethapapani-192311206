@@ -1,0 +1,22 @@
+2. Discuss how your selection_sort function handles edge cases. Specifically, consider and explain the outcomes for the following cases:
+o An empty list
+o A list with one element
+o A list with all identical elements
+o A list with negative numbers
+
+def selection(a):
+    n=len(a)
+    for i in range(n):
+        min=i
+        for j in range(i+1,n):
+            if a[j]<a[min]:
+                min=j
+        if(min!=i):
+            temp=a[i]
+            a[i]=a[min]
+            a[min]=temp
+    return a
+a=list(map(int,input("enter array elements :").split()))
+res=selection(a)
+print("sorted array :",res)
+

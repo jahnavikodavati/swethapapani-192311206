@@ -1,0 +1,51 @@
+def optimal_bst(keys, freq):
+    n = len(keys)
+
+    # Cost and root tables
+    cost = [[0] * (n + 1) for _ in range(n + 1)]
+    root = [[0] * (n + 1) for _ in range(n + 1)]
+
+    # Initialize frequency sums for convenience
+    for i in range(1, n + 1):
+        cost[i][i] = freq[i - 1]
+        root[i][i] = i
+    
+    # Fill the cost and root tables
+    for l in range(2, n + 1):  # l is the chain length
+        for i in range(1, n - l + 2):  # i is the starting index
+            j = i + l - 1  # j is the ending index
+            cost[i][j] = float('inf')  # Initialize to infinity
+            sum_freq = sum(freq[k - 1] for k in range(i, j + 1))
+
+            # Try each possible root
+            for r in range(i, j + 1):
+                c = cost[i][r - 1] + cost[r + 1][j] + sum_freq
+                if c < cost[i][j]:
+                    cost[i][j] = c
+                    root[i][j] = r
+
+    return cost, root
+
+
+def print_matrix(matrix):
+    for row in matrix:
+        print("\t".join(f"{val:.1f}" for val in row))
+
+
+# Input data
+keys = ['A', 'B', 'C', 'D']
+frequencies = [0.1, 0.2, 0.4, 0.3]
+
+# Construct the OBST
+cost_matrix, root_matrix = optimal_bst(keys, frequencies)
+
+# Resulting cost of the OBST
+total_cost = cost_matrix[1][len(keys)]
+
+# Output
+print(f"Total Cost: {total_cost:.1f}")
+print("Cost Table:")
+print_matrix(cost_matrix)
+
+print("Root Table:")
+print_matrix(root_matrix)

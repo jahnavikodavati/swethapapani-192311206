@@ -1,0 +1,36 @@
+def permute(nums):
+    def backtrack(path, used):
+        if len(path) == len(nums):
+            # Found a valid permutation
+            result.append(path[:])  # Append a copy of the current permutation
+            return
+        
+        for i in range(len(nums)):
+            if used[i]:
+                continue  # Skip already used numbers
+            
+            # Include this number in the current permutation
+            used[i] = True
+            path.append(nums[i])
+            
+            # Continue building the permutation
+            backtrack(path, used)
+            
+            # Backtrack, remove the last number and mark it as unused
+            path.pop()
+            used[i] = False
+
+    result = []
+    used = [False] * len(nums)  # Track used numbers
+    backtrack([], used)
+    return result
+
+# Example usage:
+nums1 = [1, 2, 3]
+print(permute(nums1))
+
+nums2 = [0, 1]
+print(permute(nums2))
+
+nums3 = [1]
+print(permute(nums3))

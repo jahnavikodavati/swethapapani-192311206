@@ -1,0 +1,67 @@
+import heapq
+from collections import defaultdict, namedtuple
+
+# Define a node structure
+Node = namedtuple('Node', ['char', 'freq', 'left', 'right'])
+
+def build_huffman_tree(characters, frequencies):
+    heap = []
+    
+    # Create initial nodes and push them into the priority queue
+    for char, freq in zip(characters, frequencies):
+        heapq.heappush(heap, (freq, Node(char, freq, None, None)))
+    
+    # Combine nodes until there is only one node left in the heap
+    while len(heap) > 1:
+        freq1, left = heapq.heappop(heap)
+        freq2, right = heapq.heappop(heap)
+        combined_node = Node(None, freq1 + freq2, left, right)
+        heapq.heappush(heap, (combined_node.freq, combined_node))
+    
+    return heap[0][1]  # Return the root of the tree
+
+def build_code_table(node, prefix='', code_table=None):
+    if code_table is None:
+        code_table = {}
+    if node is not None:
+        if node.char is not None:  # Leaf node
+            code_table[node.char] = prefix
+        build_code_table(node.left, prefix + '0', code_table)
+        build_code_table(node.right, prefix + '1', code_table)
+    return code_table
+
+def decode_huffman(encoded_string, root):
+    decoded_message = []
+    current_node = root
+    
+    for bit in encoded_string:
+        if bit == '0':
+            current_node = current_node.left
+        else:
+            current_node = current_node.right
+            
+        # If we reach a leaf node
+        if current_node.char is not None:
+            decoded_message.append(current_node.char)
+            current_node = root  # Reset to root
+    
+    return ''.join(decoded_message)
+
+# Function to decode the Huffman encoded string
+def decode_huffman_string(characters, frequencies, encoded_string):
+    root = build_huffman_tree(characters, frequencies)
+    return decode_huffman(encoded_string, root)
+
+# Test Case 1
+characters1 = ['a', 'b', 'c', 'd']
+frequencies1 = [5, 9, 12, 13]
+encoded_string1 = '1101100111110'
+output1 = decode_huffman_string(characters1, frequencies1, encoded_string1)
+print("Output for Test Case 1:", output1)
+
+# Test Case 2
+characters2 = ['f', 'e', 'd', 'c', 'b', 'a']
+frequencies2 = [5, 9, 12, 13, 16, 45]
+encoded_string2 = '110011011100101111001011'
+output2 = decode_huffman_string(characters2, frequencies2, encoded_string2)
+print("Output for Test Case 2:", output2)

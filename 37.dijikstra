@@ -1,0 +1,38 @@
+import heapq
+
+def dijkstra(graph, source):
+    n = len(graph)
+    distances = [float('inf')] * n
+    distances[source] = 0
+    priority_queue = [(0, source)]  # (distance, vertex)
+
+    while priority_queue:
+        current_distance, current_vertex = heapq.heappop(priority_queue)
+
+        # If we pop a vertex that has already been found to have a shorter distance, we skip it
+        if current_distance > distances[current_vertex]:
+            continue
+
+        # Explore neighbors
+        for neighbor in range(n):
+            weight = graph[current_vertex][neighbor]
+            if weight < float('inf'):  # Check if there's an edge
+                distance = current_distance + weight
+                if distance < distances[neighbor]:
+                    distances[neighbor] = distance
+                    heapq.heappush(priority_queue, (distance, neighbor))
+
+    return distances
+
+# Test Case 1
+n1 = 5
+graph1 = [
+    [0, 10, 3, float('inf'), float('inf')],
+    [float('inf'), 0, 1, 2, float('inf')],
+    [float('inf'), 4, 0, 8, 2],
+    [float('inf'), float('inf'), float('inf'), 0, 7],
+    [float('inf'), float('inf'), float('inf'), 9, 0]
+]
+source1 = 0
+output1 = dijkstra(graph1, source1)
+print("Test Case 1 Output:", output1)  # Expected: [0, 7, 3, 9, 5]
